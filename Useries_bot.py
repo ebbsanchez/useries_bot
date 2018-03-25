@@ -3,9 +3,10 @@ import requests
 from bs4 import BeautifulSoup
 from telegram.ext import Updater
 from telegram.ext import MessageHandler, Filters
+import os
 
-with open('token.config') as f:
-    TOKEN = f.read()
+
+TOKEN = os.environ["USERIES_BOT_TOKEN"]
 
 
 updater = Updater(token=TOKEN)
