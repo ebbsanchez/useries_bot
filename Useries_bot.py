@@ -38,6 +38,7 @@ def flash_date(bot,update):
 def search(search_keyword):
 
     search_url = 'https://next-episode.net/site-search-{}.html'.format(search_keyword)
+    skip_search = 0
     
     r = requests.get(search_url,headers=headers) # 讀取網址
     soup = BeautifulSoup(''.join(r.text),'lxml')       # 讀進BeautifulSoup
@@ -46,10 +47,13 @@ def search(search_keyword):
     if result is not None:
         result_url = result.find('span').find('a')['href']
         result_url = root + result_url
+    elif soup.find(id='show_name'):
+        result_url = search_url
+        skip_search = 1
     else:
         return "oops! 從關鍵字「{}」找不到任何美劇...".format(search_keyword)
-    
-    r = requests.get(result_url,headers=headers)
+    if skip_search == 0:
+        r = requests.get(result_url,headers=headers)
     soup = BeautifulSoup(''.join(r.text), 'lxml')
     nextep_block = soup.body.find_all('div', id="next_episode")
     if len(nextep_block) == 0:
